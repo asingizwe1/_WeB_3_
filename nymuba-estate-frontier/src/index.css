@@ -1,0 +1,87 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 33% 5%;
+    --foreground: 210 40% 98%;
+
+    --card: 240 33% 7%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 240 33% 5%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 260 78% 75%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 260 25% 54%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 240 25% 20%;
+    --muted-foreground: 240 10% 80%;
+
+    --accent: 12 90% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 240 33% 20%;
+    --input: 240 33% 20%;
+    --ring: 260 78% 75%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 240 33% 10%;
+    --sidebar-foreground: 240 10% 80%;
+    --sidebar-primary: 260 78% 75%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 33% 15%;
+    --sidebar-accent-foreground: 240 10% 80%;
+    --sidebar-border: 240 33% 15%;
+    --sidebar-ring: 260 78% 75%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-[Space_Grotesk];
+  }
+}
+
+.glass-card {
+  @apply backdrop-blur-lg bg-white/10 border border-white/20 shadow-glass;
+}
+
+.property-card {
+  @apply relative overflow-hidden rounded-xl transition-all duration-300 hover:shadow-neon;
+}
+
+.gradient-border {
+  @apply relative rounded-xl before:absolute before:inset-0 before:-z-10 before:p-[1px] before:rounded-xl before:bg-gradient-to-r before:from-nymuba-primary before:to-nymuba-orange;
+}
+
+.glow-text {
+  @apply font-bold bg-clip-text text-transparent bg-gradient-to-r from-nymuba-primary via-nymuba-vivid to-nymuba-primary animate-glow-pulse;
+}
+
+.glow-btn {
+  @apply relative py-2.5 px-5 font-medium text-white transition-all duration-300 ease-in-out hover:shadow-neon rounded-lg;
+}
+
+.blur-bg {
+  @apply bg-black/20 backdrop-blur-md;
+}
+
+.animate-hover {
+  @apply transition-all duration-300 transform hover:-translate-y-1;
+}
