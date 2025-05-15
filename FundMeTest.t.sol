@@ -12,6 +12,18 @@ contract FundMeTest is Test {
 
 //to solve the scoping you make fundme a storage/state variable
 FundMe fundme;
+uint256 STARTING_BALANCE=10 ether;
+uint256 constant SEND_VALUE = 0.1 ether;
+
+/*
+✅ It gives you a unique test address just by giving a name like "alice", "bob", "owner", etc.
+
+✅ It’s deterministic — meaning makeAddr("alice") will always return the same address every time.
+
+✅ Great for testing roles or wallets without hardcoding random addresses.
+ */
+address USER = makeAddr("user");
+
 function setUp() external {
     //our fundme variable of type fundme is gonna be the new fundme contract
 //the owner of fundme is actually fundme test not the deployer
@@ -20,6 +32,7 @@ function setUp() external {
 DeployFundMe deployFundMe=new DeployFundMe();
 //because run is gonna return the fundme contract
 fundme=deployFundMe.run();
+vm.deal(USER, STARTING_BALANCE);
 
 }
 //by making it a view you are restricting mutability
@@ -42,6 +55,57 @@ function testPiceFeedVersionIsAccurate() public view {
     uint256 version=fundme.getVersion();
     assertEq(version, 4);
  
-}}
+}
+   function testFundFailsWithoutEnoughETH()public{
+
+    //vm is a cheatcode handler — it's how you interact with the Foundry Virtual Machine during tests and scripts.
+
+vm.expectRevert(); 
+//if we write the above we expect the next line to revert
+   // uint256 cat=1;//this will fail because test wont fail so test will fail
+   //fundMe.fund();//will succeed coz this will fail
+    }
+    function testFundUpdatesFundedDataStructure() public{
+//create a fake new address to send all our transactions 
+vm.prank(USER);//the next tx will be sent by user
+//so the fundme.fund will be sent by user
+        fundme.fund{value: 0.1 ether}();
+        uint256 amountFunded = fundme.getAddressToAmountFunded(address[this]);//it wasnt msg.sender
+        assertEq(amountFunded,0.1 ether);
+    }
+
+function testWithdrawFromMultipleFunders() public {
+    //ARRANGE
+    uint160 numberOfFunders =10;
+    uint160 startingFunderIndex = 2;
+    for (uint160 i = startingFunderIndex; i < numberOfFunders; i++) {
+        //create a fake new address to send all our transactions 
+        //hoax isnt native solidity but a forge cheatcode
+        //it creates a new address and sends it some eth
+        //it also makes the address the sender of the next transaction
+   //hoax(address, uint256) is a helper function provided by Foundry's vm cheat codes that sets up the next call to appear as if it is coming from a specific address with a specific balance.
+   hoax(address(i),  SEND_VALUE);
+   //SINCE WE ARE HOAXING IT IT MEANS WE ARE PRANKING IT
+    //the next tx will be sent by user
+          fundme.fund{value: SEND_VALUE}();
+          //we shall have that many funders loop through the list and fund our contracts
+    }
+    uint256 startingOwnerBalance = fundme.i_owner().balance;
+    uint256 startingFundMeBalance = address(fundme).balance;
+    //anything sent in prank  is sent to be attended to by the contract in the brackets
+   
+   //ACT
+    vm.startPrank(fundme.getowner());
+    fundme.withdraw();
+vm.stopPrank();
+
+    //ASSERT
+    //assert that the address to amount funded is zero
+  //we should have removed all of them
+  assert(address(fundme).balance == 0);
+  assert(startingOwnerBalance + startingFundMeBalance == fundme.getowner().balance);
+}
+
+}
 
  
