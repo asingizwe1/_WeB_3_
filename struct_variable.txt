@@ -1,0 +1,60 @@
+/*
+ What happens when you mark a struct variable as public in Solidity?
+Example:
+In your HelperConfig, you wrote:
+
+solidity
+Copy code
+NetworkConfig public activeNetworkConfig;
+When you make a struct public, Solidity auto-generates a getter function for that struct. But Solidity does not allow returning structs as structs across contract boundaries (i.e., from one contract to another). So instead, the getter returns a tuple.
+
+🧠 So what is returned?
+Your struct:
+
+solidity
+Copy code
+struct NetworkConfig {
+    address priceFeed;
+}
+The auto-generated getter activeNetworkConfig() will return a tuple like this:
+
+solidity
+Copy code
+function activeNetworkConfig() external view returns (address)
+Because your struct only has one field, priceFeed, the tuple it returns is just that one address.
+
+✅ When this works
+If you're calling the function in the same contract, you can use:
+
+solidity
+Copy code
+activeNetworkConfig.priceFeed;
+✅ Because it's within the same context, the struct is preserved.
+
+❌ But when calling from outside (like your script does):
+solidity
+Copy code
+HelperConfig helperConfig = new HelperConfig();
+HelperConfig.NetworkConfig memory config = helperConfig.activeNetworkConfig(); // ❌ Error
+It tries to assign a tuple (address) to a NetworkConfig struct — which is not allowed. That’s what this error is saying:
+
+Type function () view external returns (address) is not implicitly convertible to expected type struct HelperConfig.NetworkConfig memory.
+
+🔧 Why creating a manual getter works:
+When you write this yourself:
+
+solidity
+Copy code
+function getActiveNetworkConfig() public view returns (NetworkConfig memory) {
+    return activeNetworkConfig;
+}
+You're now explicitly returning the struct, and the Solidity compiler knows to treat it as such.
+
+So this works:
+
+solidity
+Copy code
+HelperConfig.NetworkConfig memory config = helperConfig.getActiveNetworkConfig(); // ✅ OK
+
+*/
+

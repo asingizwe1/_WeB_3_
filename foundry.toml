@@ -4,7 +4,15 @@ out = "out"
 libs = ["lib"]
 #we create remappings 
 #any time foundry sees chainlink/contracts/ it replaces it with lib/chainlink-brownie-contracts/contracts/
-remappings=["@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/"]
+remappings = [
+    "@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/",
+]
+gas_reports = ["*"]
 
+ffi = true # make foundry run commands in the same process as the foundry binary
+# gas_report = true
+# gas_report = "all"
+# gas_report = "all" # this will generate a gas report for all functions
+# gas_report = "all" # this will generate a gas report for all functions
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
 #provides parameters we could use

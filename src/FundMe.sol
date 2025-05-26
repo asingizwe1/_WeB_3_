@@ -2,7 +2,7 @@
 pragma solidity ^0.8.18;
 
 //foundry cant allow imports FROM you have to explicitly download it
-// Note: The AggregatorV3Interface might be at a different location than what was in the video!
+//  Note: The AggregatorV3Interface might be at a different location than what was in the video!
 
 //we need to tell foundry that @chainlink/contracts/src/v0.8 should point to the folder in the LIB
 //so we create something called a remapping to link to dependencies
@@ -14,8 +14,10 @@ error NotOwner();
 contract FundMe {
     using PriceConverter for uint256;
 
-    mapping(address => uint256) public addressToAmountFunded;
-    address[] public funders;
+    //PRIVATE VARIABLES ARE MORE GAS EFFICIENT THAN PUBLIC ONES
+//storage variables should start with s_
+    mapping(address => uint256) private s_addressToAmountFunded;
+    address[] public s_funders;
 
     // Could we make this constant?  /* hint: no! We should make it immutable! */
     address public /* immutable */ i_owner;
@@ -31,8 +33,8 @@ AggregatorV3Interface private s_priceFeed;
     function fund() public payable {
         require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "You need to spend more ETH!");
         // require(PriceConverter.getConversionRate(msg.value) >= MINIMUM_USD, "You need to spend more ETH!");
-        addressToAmountFunded[msg.sender] += msg.value;
-        funders.push(msg.sender);
+        s_addressToAmountFunded[msg.sender] += msg.value;
+        s_funders.push(msg.sender);
     }
 //use of version
     function getVersion() public view returns (uint256) {
@@ -45,13 +47,23 @@ AggregatorV3Interface private s_priceFeed;
         if (msg.sender != i_owner) revert NotOwner();
         _;
     }
+    function cheaperWithdraw() public onlyOwner{
+        uint256 fundersLength = s_funders.length;
+        for(uint256 funderIndex=0; funderIndex<fundersLength;funderIndex++){
+            address funder = s_funders[funderIndex];
+            s_addressToAmountFunded[funder] = 0;
 
-    function withdraw() public onlyOwner {
-        for (uint256 funderIndex = 0; funderIndex < funders.length; funderIndex++) {
-            address funder = funders[funderIndex];
-            addressToAmountFunded[funder] = 0;
         }
-        funders = new address[](0);
+        //we only read it from storage one time
+        //thats the point of s_ syntax you can tell what is in storage
+    }
+//every time you read size of array in your loop you eat alot of gas
+    function withdraw() public onlyOwner {
+        for (uint256 funderIndex = 0; funderIndex < s_funders.length; funderIndex++) {
+            address funder = s_funders[funderIndex];
+            s_addressToAmountFunded[funder] = 0;
+        }
+        s_funders = new address[](0);
         // // transfer
         // payable(msg.sender).transfer(address(this).balance);
 
@@ -82,6 +94,19 @@ AggregatorV3Interface private s_priceFeed;
     receive() external payable {
         fund();
     }
+ 
+    //to check if our storage variables are being updated
+/*
+View/pure functions (getters)
+ */
+ function getAddressToAmountFunded(address fundingAddress) external view returns (uint256){
+return s_addressToAmountFunded[fundingAddress];
+
+ }
+   
+   function getFunder(uint256 index) external view returns (address){
+    return s_funders[index];
+   }
 }
 
 // Concepts we didn't cover yet (will cover in later sections)
