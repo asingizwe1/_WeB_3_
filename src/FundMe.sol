@@ -6,7 +6,7 @@ pragma solidity ^0.8.18;
 
 //we need to tell foundry that @chainlink/contracts/src/v0.8 should point to the folder in the LIB
 //so we create something called a remapping to link to dependencies
-import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {PriceConverter} from "./PriceConverter.sol";
 
 error NotOwner();
