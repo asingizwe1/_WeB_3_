@@ -1,0 +1,24 @@
+Compile time is the period when your code is being converted from human-readable source code (like .rs files) into a machine-readable binary (like an executable .exe or .out file).
+The compiler (e.g., rustc) checks for:
+
+Syntax errors
+
+Type errors (wrong types, mismatched types)
+
+Borrowing and ownership violations (in Rust!)
+
+Missing semicolons, etc.
+
+
+Run time is when your compiled program is actually running, and the computer is executing the instructions line-by-line.What happens at run time:
+Your code executes
+
+Variables get actual values
+
+Loops run, functions are called
+
+Files may be opened
+
+Network connections are made
+
+Errors may happen (like division by zero, out-of-bounds access, etc.)
