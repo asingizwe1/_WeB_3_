@@ -1,0 +1,119 @@
+**Unlock Protocol** is a decentralized protocol for memberships and subscriptions built on blockchain. It allows developers to gate content, features, or experiences using **NFT-based locks**. Instead of traditional logins or payment gateways, users unlock access by holding a valid NFT key.
+
+---
+
+### 🧠 Quick Overview
+
+* **Locks** are smart contracts that define membership terms (duration, price, etc.).
+* **Keys** are NFTs minted to users when they purchase access.
+* **Unlock.js / Unlock Checkout** provides easy integration into dApps or websites.
+* Built on Ethereum, Polygon, Optimism, and other EVM chains.
+
+Use cases:
+
+* Paywalled content (articles, videos)
+* Token-gated Discord/Telegram
+* Ticketing for events
+* Membership-based DAOs
+* SaaS/paywall APIs
+
+---
+
+### 🚀 Sample Flow: Deploy a Lock & Use in Frontend
+
+#### 🔐 Step 1: Create a Lock using Unlock Protocol's Dashboard or SDK
+
+Using their [dashboard](https://app.unlock-protocol.com/), you can deploy a lock visually.
+
+Alternatively, use their SDK:
+
+```bash
+npm install @unlock-protocol/unlock-js ethers
+```
+
+Then in JS:
+
+```js
+import { Wallet, ethers } from 'ethers';
+import UnlockService from '@unlock-protocol/unlock-js';
+
+// setup signer
+const provider = new ethers.providers.JsonRpcProvider("https://rpc-mumbai.matic.today");
+const wallet = new Wallet("YOUR_PRIVATE_KEY", provider);
+
+// initialize unlock
+const unlock = new UnlockService(provider);
+
+// lock params
+const lock = {
+  name: 'My Premium Content',
+  keyPrice: ethers.utils.parseEther('0.01').toString(),
+  expirationDuration: 60 * 60 * 24 * 30, // 30 days
+  maxNumberOfKeys: 100,
+  currencyContractAddress: null // use native token like MATIC
+};
+
+// deploy lock
+unlock.createLock(lock, wallet.address).then((lockAddress) => {
+  console.log('Lock deployed at:', lockAddress);
+});
+```
+
+---
+
+#### 🎫 Step 2: Add Unlock Checkout to Frontend
+
+Unlock has a no-code modal for selling keys. Add this to your website:
+
+```html
+<script src="https://pay.unlock-protocol.com/static/unlock.latest.min.js"></script>
+<script>
+  const lockAddress = "0xLOCK_ADDRESS_HERE";
+  const callToAction = {
+    default: "Become a member to access this content",
+  };
+
+  const unlockProtocolConfig = {
+    locks: {
+      [lockAddress]: {
+        name: "Premium Membership"
+      }
+    },
+    callToAction,
+    title: "Join to Unlock",
+    referrer: "", // Optional: your app's address
+  };
+
+  window.unlockProtocol && window.unlockProtocol.loadCheckoutModal(unlockProtocolConfig);
+</script>
+```
+
+Then add a button:
+
+```html
+<button onclick="window.unlockProtocol && window.unlockProtocol.loadCheckoutModal()">Unlock</button>
+```
+
+---
+
+### ✅ What You Can Build with It
+
+| Use Case       | Description                                            |
+| -------------- | ------------------------------------------------------ |
+| Premium Blog   | Only NFT holders can read full articles                |
+| Discord Gating | Use with Collab.Land to restrict access                |
+| Online Courses | Only holders can view course materials                 |
+| NFT Tickets    | Create time-limited or transferable tickets            |
+| SaaS App       | Only users with valid keys can access API or dashboard |
+
+---
+
+### 🔗 Resources
+
+* 🔧 Unlock Dashboard: [https://app.unlock-protocol.com/](https://app.unlock-protocol.com/)
+* 📖 Docs: [https://docs.unlock-protocol.com/](https://docs.unlock-protocol.com/)
+* 🧪 Playground: [https://demo.unlock-protocol.com/](https://demo.unlock-protocol.com/)
+
+---
+
+If you tell me your use case (e.g., locking a blog, course platform, React app), I’ll give you **tailored code**.
