@@ -1,0 +1,3 @@
+https://github.com/bitcoinbook/bitcoinbook  -> BTC book
+https://github.com/BlockchainCommons/Learning-Bitcoin-from-the-Command-Line ->BTC Commandline
+https://developer.bitcoin.org/reference/rpc/ ->RPC API Reference
