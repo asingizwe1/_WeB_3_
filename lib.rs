@@ -1,10 +1,15 @@
-pub fn mul(x: i32, y: i32) -> i32 {
-    x * y
+pub fn eq(x: char, y: char) -> bool {
+    if x == y {
+        true
+    } else {
+        false
+    }
 }
-//we can do with out the return keyword
-fn add(x: i32, y: i32) -> i32 {
-    x + y //no need for colon without return key word
+
+pub fn add(x: f32, y: f32, z: f32) -> f32 {
+    x + y + z
 }
-pub fn div(x: i32, y: i32) -> i32 {
-    x / y
+
+pub fn cast(x: u8, y: i8, z: f32) -> f32 {
+    x as f32 + y as f32 + z
 }
