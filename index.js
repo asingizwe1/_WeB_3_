@@ -1,97 +1,42 @@
-import { ethers } from "./ethers-6.7.esm.min.js"
-import { abi, contractAddress } from "./constants.js"
+import { Actor, HttpAgent } from "@dfinity/agent";
 
-//our function is broken down into a function select 
+// Imports and re-exports candid interface
+import { idlFactory } from './ai_writer_backend.did.js';
+export { idlFactory } from './ai_writer_backend.did.js';
+// CANISTER_ID is replaced by webpack based on node environment
+export const canisterId = process.env.CANISTER_ID_AI_WRITER_BACKEND;
 
-const connectButton = document.getElementById("connectButton")
-const withdrawButton = document.getElementById("withdrawButton")
-const fundButton = document.getElementById("fundButton")
-const balanceButton = document.getElementById("balanceButton")
-connectButton.onclick = connect
-withdrawButton.onclick = withdraw
-fundButton.onclick = fund
-balanceButton.onclick = getBalance
+/**
+ * @deprecated since dfx 0.11.1
+ * Do not import from `.dfx`, instead switch to using `dfx generate` to generate your JS interface.
+ * @param {string | import("@dfinity/principal").Principal} canisterId Canister ID of Agent
+ * @param {{agentOptions?: import("@dfinity/agent").HttpAgentOptions; actorOptions?: import("@dfinity/agent").ActorConfig} | { agent?: import("@dfinity/agent").Agent; actorOptions?: import("@dfinity/agent").ActorConfig }} [options]
+ * @return {import("@dfinity/agent").ActorSubclass<import("./ai_writer_backend.did.js")._SERVICE>}
+ */
+export const createActor = (canisterId, options = {}) => {
+  console.warn(`Deprecation warning: you are currently importing code from .dfx. Going forward, refactor to use the dfx generate command for JavaScript bindings.
 
-//connectbutton.onclick is gonna call our connect function
-async function connect() {
-  if (typeof window.ethereum !== "undefined") {
-    try {
-      await ethereum.request({//allows website to send transactions for you to actually sign
-        method: // to see if there are accounts  in metamask to connect to
-          "eth_requestAccounts"
-      })
-    } catch (error) {
-      console.log(error)
-    }
-    connectButton.innerHTML = "Connected"
-    const accounts = await ethereum.request({ method: "eth_accounts" })
-    console.log(accounts)
-  } else {
-    connectButton.innerHTML = "Please install MetaMask"
+See https://internetcomputer.org/docs/current/developer-docs/updates/release-notes/ for migration instructions`);
+  const agent = options.agent || new HttpAgent({ ...options.agentOptions });
+  
+  // Fetch root key for certificate validation during development
+  if (process.env.DFX_NETWORK !== "ic") {
+    agent.fetchRootKey().catch(err => {
+      console.warn("Unable to fetch root key. Check to ensure that your local replica is running");
+      console.error(err);
+    });
   }
-}
 
-async function withdraw() {
-  console.log(`Withdrawing...`)
-  if (typeof window.ethereum !== "undefined") {
-    const provider = new ethers.BrowserProvider(window.ethereum)
-    await provider.send('eth_requestAccounts', [])
-    const signer = await provider.getSigner()
-    const contract = new ethers.Contract(contractAddress, abi, signer)
-    try {
-      console.log("Processing transaction...")
-      const transactionResponse = await contract.withdraw()
-      await transactionResponse.wait(1)
-      console.log("Done!")
-    } catch (error) {
-      console.log(error)
-    }
-  } else {
-    withdrawButton.innerHTML = "Please install MetaMask"
-  }
-}
-
-//when metamask calls the fund function it converts it to function selector
-
-async function fund() {
-  //the fund function first gets the ETH amount
-  const ethAmount = document.getElementById("ethAmount").value
-  console.log(`Funding with ${ethAmount}...`)
-  if (typeof window.ethereum !== "undefined") {
-    //the statement makes an api call using the rpc url
-    const provider = new ethers.BrowserProvider(window.ethereum)
-    //etrhers gets rpc url out of it
-    await provider.send('eth_requestAccounts', [])
-    //signer helps us get the account that is connected
-    const signer = await provider.getSigner()
-    const contract = new ethers.Contract(contractAddress, abi, signer)
-    //contractAddress- what was deployed to
-    //abi - has all functions we can call on that contract
-    //the contract is an instance of the contract that we can interact with
-    try {
-      const transactionResponse = await contract.fund({
-        value: ethers.parseEther(ethAmount),//converts the amount to wei == 0.1 ->100000000000000000000000
-      })//the website just sends transaction to metamask.. so it never sees the private key
-      await transactionResponse.wait(1)
-    } catch (error) {
-      console.log(error)
-    }
-  } else {
-    fundButton.innerHTML = "Please install MetaMask"
-  }
-}
-
-async function getBalance() {
-  if (typeof window.ethereum !== "undefined") {
-    //the statement makes an api call using the rpc url
-    const provider = new ethers.BrowserProvider(window.ethereum)
-    try {
-      const balance = await provider.getBalance(contractAddress)
-      console.log(ethers.formatEther(balance))
-    } catch (error) {
-      console.log(error)
-    }
-  } else {
-    balanceButton.innerHTML = "Please install MetaMask"
-  }
-}
+  // Creates an actor with using the candid interface and the HttpAgent
+  return Actor.createActor(idlFactory, {
+    agent,
+    canisterId,
+    ...(options ? options.actorOptions : {}),
+  });
+};
+  
+/**
+ * A ready-to-use agent for the ai_writer_backend canister
+ * @type {import("@dfinity/agent").ActorSubclass<import("./ai_writer_backend.did.js")._SERVICE>}
+ */
+export const ai_writer_backend = createActor(canisterId);

@@ -1,0 +1,17 @@
+type Time = int;
+type ContentEntry = 
+ record {
+   cid: text;
+   contentType: text;
+   createdAt: Time;
+   id: nat;
+   owner: principal;
+   prompt: text;
+   tone: text;
+ };
+service : {
+  createContent: (prompt: text, contentType: text, tone: text, cid: text) ->
+   (nat);
+  getContent: (id: nat) -> (opt ContentEntry) query;
+  listByOwner: (owner: principal) -> (vec ContentEntry) query;
+}
