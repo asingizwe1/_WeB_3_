@@ -1,15 +1,13 @@
-pub fn eq(x: char, y: char) -> bool {
-    if x == y {
-        true
-    } else {
-        false
-    }
+pub fn first(t: (bool, u32, char)) -> bool {
+    println!("{}", t.0);
 }
 
-pub fn add(x: f32, y: f32, z: f32) -> f32 {
-    x + y + z
+pub fn last(t: (bool, u32, char)) -> char {
+    println!("{}", t.2);
 }
 
-pub fn cast(x: u8, y: i8, z: f32) -> f32 {
-    x as f32 + y as f32 + z
+pub fn swap(t: (u32, u32)) -> (u32, u32) {
+    let (a, b) = t;
+    println!("({}, {})", b, a);
+    (b, a)
 }
