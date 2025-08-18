@@ -1,13 +1,25 @@
-pub fn first(t: (bool, u32, char)) -> bool {
-    println!("{}", t.0);
+pub fn hello() -> String {
+    let x = String::from("Hello, RUST!");
+    println!("{}", x);
+    return x;
 }
 
-pub fn last(t: (bool, u32, char)) -> char {
-    println!("{}", t.2);
+pub fn greet(name: &str) -> String {
+    //appending a string slice to a String
+    let mut x = String::from("Hello, ");
+    x += name;
+    return x;
 }
 
-pub fn swap(t: (u32, u32)) -> (u32, u32) {
-    let (a, b) = t;
-    println!("({}, {})", b, a);
-    (b, a)
+pub fn append(mut s: String) -> String {
+    let y = format!("{}!", s);
+    return y;
+}
+fn main() {
+    //main has an implicit return type of (), the compiler complains that you’re “returning” a String instead of ().
+    //so find context to use the functions
+    println!("{}", hello());
+    println!("{}", greet("Louis"));
+    let j = "timmy"; //string slices are hardcoded
+    println!("{}", append(j.to_string()));
 }
