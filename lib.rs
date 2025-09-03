@@ -1,25 +1,13 @@
-pub fn hello() -> String {
-    let x = String::from("Hello, RUST!");
-    println!("{}", x);
-    return x;
+#[derive(Debug)]
+pub struct Account {
+    pub address: String,
+    pub balance: u32,
 }
 
-pub fn greet(name: &str) -> String {
-    //appending a string slice to a String
-    let mut x = String::from("Hello, ");
-    x += name;
-    return x;
-}
-
-pub fn append(mut s: String) -> String {
-    let y = format!("{}!", s);
-    return y;
-}
-fn main() {
-    //main has an implicit return type of (), the compiler complains that you’re “returning” a String instead of ().
-    //so find context to use the functions
-    println!("{}", hello());
-    println!("{}", greet("Louis"));
-    let j = "timmy"; //string slices are hardcoded
-    println!("{}", append(j.to_string()));
+pub fn new(address: String) -> Account {
+    Account {
+        address: address,
+        balance: 0,
+    } //we dont put ";" we leave it blank because ";" makes it a statement while
+      //when you leave it vlank in a function  it means thats bthe value you are returning
 }
