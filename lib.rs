@@ -1,13 +1,7 @@
-#[derive(Debug)]
-pub struct Account {
-    pub address: String,
-    pub balance: u32,
-}
+use std::collections::HashMap;
 
-pub fn new(address: String) -> Account {
-    Account {
-        address: address,
-        balance: 0,
-    } //we dont put ";" we leave it blank because ";" makes it a statement while
-      //when you leave it vlank in a function  it means thats bthe value you are returning
+pub fn init(address: String, amount: u32) -> HashMap<String, u32> {
+    let mut x: Hashmap<String, u32> = HashMap::new();
+    x.insert(address, amount); //we are using the ones taken into the funcyion
+    x
 }
