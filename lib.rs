@@ -1,23 +1,13 @@
-pub fn min(x: i32, y: i32) -> i32 {
-    if x < y {
-        x
-    } else {
-        y
+pub fn sum(nums: Vec<i32>) -> i32 {
+    let v = vec![1, 2, 3];
+    let mut sum = 0;
+    //basically for i ->  the i is for each element in the vector
+    for i in v.iter() {
+        sum += i;
     }
 }
 
-pub fn max(x: i32, y: i32) -> i32 {
-    if x > y {
-        x //remember we dont put ; because we want to return it
-    } else {
-        y
-    }
-}
-
-pub fn sign(x: i32) -> i32 {
-    if x < 0 {
-        -1
-    } else {
-        1
-    }
+pub fn fill(i: u32, n: usize) -> Vec<u32> {
+    //return a vector of length n filled with letter i
+    vec![i; n] //vector of length n filled with letter i
 }
