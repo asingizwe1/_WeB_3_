@@ -1,0 +1,2 @@
+`let config: Option<u32> = Some(42); let mut processed_value = 0; if let Some(val) = config { processed_value = val * 2; }`. What will be the value of `processed_value` after this code executes?
+84 is the result
