@@ -1,0 +1,46 @@
+Advantages of using Box<T> (heap allocation)
+
+Storing values of unknown or large size
+
+The stack is small and fast, but limited.
+
+If you have a very large data structure (e.g., a huge array or deeply nested type), keeping it on the heap avoids stack overflows.
+
+Box<T> just stores a small pointer on the stack, while the real data lives in heap memory.
+
+let big_vec = Box::new([0u8; 1_000_000]); // Stored on heap instead of stack
+
+
+Enabling recursive types
+
+Rust requires knowing the size of types at compile time. Recursive types like linked lists or trees don’t have a known size without indirection.
+
+Box<T> solves this by providing a fixed-size pointer, breaking the infinite recursion.
+
+enum List {
+    Node(i32, Box<List>),
+    Nil,
+}
+
+
+Transfer of ownership without copying big data
+
+Moving a Box<T> is cheap because it only moves the pointer, not the whole data.
+
+This is useful when passing large structures around functions.
+
+Trait objects / dynamic dispatch
+
+If you want to store a type that implements a trait but don’t know its size at compile time (dyn Trait), you need a pointer type like Box<dyn Trait>.
+
+trait Shape { fn draw(&self); }
+struct Circle;
+impl Shape for Circle { fn draw(&self) { println!("Circle"); } }
+
+let shape: Box<dyn Shape> = Box::new(Circle);
+shape.draw();
+
+
+Deterministic deallocation
+
+Unlike Rc or Arc, a Box<T> is deallocated as soon as it goes out of scope, giving you predictable memory management without reference counting overhead.
