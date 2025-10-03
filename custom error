@@ -1,0 +1,25 @@
+use std::fmt;
+
+#[derive(Debug)]
+enum MyError {
+    Io(std::io::Error),
+    Parse(std::num::ParseIntError),
+}
+
+impl fmt::Display for MyError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            MyError::Io(e) => write!(f, "IO error: {}", e),
+            MyError::Parse(e) => write!(f, "Parse error: {}", e),
+        }
+    }
+}
+
+impl std::error::Error for MyError {}
+
+impl From<std::io::Error> for MyError {
+    fn from(e: std::io::Error) -> MyError { MyError::Io(e) }
+}
+impl From<std::num::ParseIntError> for MyError {
+    fn from(e: std::num::ParseIntError) -> MyError { MyError::Parse(e) }
+}
