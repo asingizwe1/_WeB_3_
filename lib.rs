@@ -1,15 +1,10 @@
-pub fn unwrap_or_default(x: Option<u32>, v: u32) -> u32 {
-    if let Some(value) = x {
-        value
-    } else {
-        v
-    }
+pub fn parse_and_add(a: &str, b: &str) -> u32 {
+    //parsing is converting from string to number
+    let q = a.parse().expect("Failed to parse a");
+    let w = b.parse().expect("Failed to parse variable");
+    q + w
 }
-/*pub fn unwrap_or_default(x: Option<u32>, v: u32) -> u32 {
-    todo!();
+
+pub fn unwrap_and_add(x: Option<u32>, y: Option<u32>) -> u32 {
+    x.unwrap() + y.unwrap()
 }
-Use the if, let syntax to extract the value stored inside a Some.
-
-Return the inner value.
-
-If x is None, then return the default value v. */
