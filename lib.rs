@@ -1,23 +1,28 @@
-#[derive(Debug)]
-pub struct Rectangle {
-    pub top: u32,
-    pub left: u32,
-    pub width: u32,
-    pub height: u32,
+pub trait Tester {
+    fn test(&self, file_path: &str) -> String;
 }
 
-impl Rectangle {
-    pub fn new(width: u32, height: u32) -> Self {
-        Rectangle {
-            top: 0,
-            left: 0,
-            width,
-            height,
-        }
-    }
+pub struct Foundry {
+    pub version: String,
+}
 
-    pub fn move_to(&mut self, top: u32, left: u32) {
-        self.top = top;
-        self.left = left;
+impl Tester for Foundry {
+    fn test(&self, file_path: &str) -> String {
+        format!("forge test {}", file_path)
     }
+}
+
+pub struct Cargo {
+    pub version: String,
+}
+
+impl Tester for Cargo {
+    fn test(&self, file_path: &str) -> String {
+        format!("cargo test {}", file_path)
+    }
+}
+
+//tester is a type that implements a trait
+pub fn test(tester: &impl Tester, file_path: &str) -> String {
+    tester.test(file_path);
 }
