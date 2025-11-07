@@ -1,28 +1,35 @@
-pub trait Tester {
-    fn test(&self, file_path: &str) -> String;
+pub trait Iterator<T> {
+    fn next(&mut self) -> Option<&T>;
 }
 
-pub struct Foundry {
-    pub version: String,
+pub struct TupleIter<T> {
+    pub tuple: (T, T, T),
+    pub next: usize, //index next to track which element to return
 }
+//impl<generic type> Trait<generic type> for Struct<generic type>
+impl<T> Iterator<T> for TupleIter<T> {
+    fn next(&mut self) -> Option<&T> {
+        let next = self.next; //Reads the current index next
+        self.next += 1; //Increments next for the next call
 
-impl Tester for Foundry {
-    fn test(&self, file_path: &str) -> String {
-        format!("forge test {}", file_path)
+        match next {
+            0 => Some(&self.tuple.0), //Returns a reference to the corresponding tuple element
+            1 => Some(&self.tuple.1),
+            2 => Some(&self.tuple.2),
+            _ => None,
+        }
     }
 }
 
-pub struct Cargo {
-    pub version: String,
+pub struct VecIter<T> {
+    pub vec: Vec<T>,
+    pub next: usize, //An index next to track the current position
 }
 
-impl Tester for Cargo {
-    fn test(&self, file_path: &str) -> String {
-        format!("cargo test {}", file_path)
+impl<T> Iterator<T> for VecIter<T> {
+    fn next(&mut self) -> Option<&T> {
+        let next = self.next;
+        self.next += 1;
+        self.vec.get(next) //Uses vec.get(next) to safely return a reference to the element at that index
     }
-}
-
-//tester is a type that implements a trait
-pub fn test(tester: &impl Tester, file_path: &str) -> String {
-    tester.test(file_path);
 }
