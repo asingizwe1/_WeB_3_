@@ -20,5 +20,7 @@ fn main() {
     match move_to {
         Direction::Left => println!("valid"),
         Direction::Left => println!("invalid"),
+        //you must include all cases
+        _ => println!("null"),
     }
 }
